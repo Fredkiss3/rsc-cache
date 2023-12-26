@@ -32,6 +32,7 @@ jobs:
           node-version: 18.17.1
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
+          scope: "@rsc-cache"
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --ignore-scripts
