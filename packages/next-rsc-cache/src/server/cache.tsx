@@ -20,6 +20,7 @@ export type CacheProps = {
     renderRSC: () => Promise<string>,
     cacheKey: string
   ) => Promise<string>;
+  getNextBuildId: () => Promise<string> | string;
 };
 
 export async function Cache({
@@ -28,7 +29,8 @@ export async function Cache({
   bypassInDEV,
   children,
   debugPayload = false,
-  cacheFn
+  cacheFn,
+  getNextBuildId
 }: CacheProps) {
   if (
     bypassInDEV ||
@@ -37,7 +39,7 @@ export async function Cache({
     return <>{children}</>;
   }
 
-  const cacheKey = await computeCacheKey(id);
+  const cacheKey = await computeCacheKey(id, getNextBuildId);
 
   const renderRSC = async () => {
     return await renderRSCtoString(children);
@@ -66,11 +68,10 @@ export async function Cache({
   return <CacheClient payload={cachedPayload} />;
 }
 
-const getBuildId = cache(async () => {
-  return process.env.BUILD_ID ?? "";
-});
-
-async function computeCacheKey(id: CacheId) {
+async function computeCacheKey(
+  id: CacheId,
+  getBuildId: () => Promise<string> | string
+) {
   let fullKey = Array.isArray(id) ? id.join("-") : id.toString();
 
   // the build ID is necessary because the client references for one build
