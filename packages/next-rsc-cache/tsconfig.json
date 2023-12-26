@@ -1,8 +1,8 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
+  "extends": "@rsc-cache/typescript-config/react-library.json",
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src", "rsdw.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

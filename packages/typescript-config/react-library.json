@@ -4,5 +4,6 @@
   "extends": "./base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
+    "types": ["@types/react/canary", "@types/react-dom/canary", "node"]
   }
 }

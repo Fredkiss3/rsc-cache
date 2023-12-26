@@ -1,20 +1,21 @@
 {
-    "name": "rsc-cache",
-    "private": true,
-    "scripts": {
-        "build": "turbo build",
-        "dev": "turbo dev",
-        "lint": "turbo lint",
-        "format": "biome format --write \"**/*.{ts,tsx}\""
-    },
-    "devDependencies": {
-        "@repo/eslint-config": "workspace:*",
-        "@repo/typescript-config": "workspace:*",
-        "biome": "^0.3.3",
-        "turbo": "latest"
-    },
-    "packageManager": "pnpm@8.9.0",
-    "engines": {
-        "node": ">=18"
-    }
+  "name": "rsc-cache",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "biome format --write \"**/*.{ts,tsx,json}\""
+  },
+  "devDependencies": {
+    "@rsc-cache/eslint-config": "workspace:*",
+    "@rsc-cache/typescript-config": "workspace:*",
+    "biome": "^0.3.3",
+    "turbo": "latest",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@8.9.0",
+  "engines": {
+    "node": ">=18"
+  }
 }
