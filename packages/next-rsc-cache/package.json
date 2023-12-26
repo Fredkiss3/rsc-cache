@@ -7,7 +7,9 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist/**/*.{js,d.ts}"],
+  "files": [
+    "dist/**/*.{js,d.ts}"
+  ],
   "type": "module",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -20,6 +22,8 @@
   "devDependencies": {
     "@rsc-cache/eslint-config": "workspace:*",
     "@rsc-cache/typescript-config": "workspace:*",
+    "@swc/cli": "^0.1.63",
+    "@swc/core": "^1.3.101",
     "@types/eslint": "^8.44.7",
     "@types/node": "^20.5.2",
     "@types/react": "^18.2.5",
