@@ -25,14 +25,14 @@
     "@types/react": "^18.2.5",
     "@types/react-dom": "^18.2.3",
     "eslint": "^8.53.0",
-    "react": "18.3.0-canary-c5b937576-20231219",
-    "react-dom": "18.3.0-canary-c5b937576-20231219",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "next": "^14.0.4",
-    "react": "canary",
-    "react-dom": "canary"
+    "react": ">= 18.2.0",
+    "react-dom": ">= 18.2.0"
   },
   "dependencies": {
     "server-only": "^0.0.1"
