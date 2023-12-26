@@ -8,7 +8,8 @@
     "format": "biome format --write \"**/*.{ts,tsx,json}\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build --filter=!web && pnpm publish --tag $GITHUB_REF_NAME --access public packages/next-rsc-cache"
+    "prerelease": "turbo run build --filter=!web && pnpm publish --tag beta --access public packages/next-rsc-cache",
+    "release": "turbo run build --filter=!web && pnpm publish --tag latest --access public packages/next-rsc-cache"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
