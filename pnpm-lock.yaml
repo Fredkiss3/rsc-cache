@@ -30,7 +30,7 @@ importers:
   apps/example-app:
     dependencies:
       '@rsc-cache/next':
-        specifier: workspace:0.1.0-beta
+        specifier: workspace:*
         version: link:../../packages/next-rsc-cache
       next:
         specifier: ^14.0.3
