@@ -31,12 +31,21 @@ jobs:
           node-version: 18.17.1
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
+          scope: "@rsc-cache"
 
       - name: Install Dependencies
         run: pnpm i --frozen-lockfile --ignore-scripts
 
       - name: Publish Packages
-        run: |
-          pnpm release
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # Builds the package and executes `changeset publish`
+          publish: pnpm release
+          # Alias to `changeset version` script in package.json
+          version: pnpm version-packages
+          commit: "chore: update package versions"
+          title: "chore: update package versions"
         env:
-          NPM_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
