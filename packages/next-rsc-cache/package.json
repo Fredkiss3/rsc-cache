@@ -1,7 +1,6 @@
 {
   "name": "@rsc-cache/next",
   "version": "0.1.0-beta",
-  "private": true,
   "exports": {
     ".": {
       "react-server": "./dist/index.js",
