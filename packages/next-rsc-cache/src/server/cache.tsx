@@ -6,8 +6,7 @@ import { CacheClient } from "../client/cache-client.js";
 // utils
 import React, { cache } from "react";
 import { renderRSCtoString } from "./render-rsc-to-string.js";
-// @ts-expect-error
-import { unstable_cache } from "next/cache";
+import { unstable_cache } from "next/cache.js";
 
 // types
 export type CacheId = string | number | (string | number)[];
