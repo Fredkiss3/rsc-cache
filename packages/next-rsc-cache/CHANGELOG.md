@@ -1,5 +1,11 @@
 # @rsc-cache/next
 
+## 0.1.5
+
+### Patch Changes
+
+- Use bunchee for bundling
+
 ## 0.1.4
 
 ### Patch Changes
