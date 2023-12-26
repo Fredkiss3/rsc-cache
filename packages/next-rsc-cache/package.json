@@ -3,16 +3,14 @@
   "version": "0.1.0-beta",
   "private": true,
   "exports": {
-    "./cache": "./src/cache.tsx"
+    "./cache": "./src/server/cache.tsx"
   },
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
-    "generate:component": "turbo gen react-component"
+    "lint": "eslint . --max-warnings 0"
   },
   "devDependencies": {
     "@rsc-cache/eslint-config": "workspace:*",
     "@rsc-cache/typescript-config": "workspace:*",
-    "@turbo/gen": "^1.10.12",
     "@types/eslint": "^8.44.7",
     "@types/node": "^20.5.2",
     "@types/react": "^18.2.5",
@@ -28,7 +26,6 @@
     "react-dom": "canary"
   },
   "dependencies": {
-    "react-error-boundary": "^4.0.12",
     "server-only": "^0.0.1"
   }
 }

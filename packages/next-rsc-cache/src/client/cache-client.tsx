@@ -23,7 +23,7 @@ export function CacheClient({ payload }: CacheClientProps) {
     const pendingPromise = renderPayloadToJSX(payload)
       .then((value) => {
         // @ts-expect-error
-        if (pending.status === "pending") {
+        if (pendingPromise.status === "pending") {
           const fulfilledThenable = pendingPromise as any;
           fulfilledThenable.status = "fulfilled";
           fulfilledThenable.value = value;
@@ -32,7 +32,7 @@ export function CacheClient({ payload }: CacheClientProps) {
       })
       .catch((error) => {
         // @ts-expect-error
-        if (pending.status === "pending") {
+        if (pendingPromise.status === "pending") {
           const rejectedThenable = pendingPromise as any;
           rejectedThenable.status = "rejected";
           rejectedThenable.reason = error;
@@ -52,9 +52,7 @@ export function CacheClientRenderer(props: {
   return React.use(props.promise);
 }
 
-export const renderPayloadToJSX = async function resolveElement(
-  payload: string
-) {
+async function renderPayloadToJSX(payload: string) {
   console.log("Render payload to JSX");
   const rscStream = transformStringToReadableStream(payload);
   let rscPromise: Promise<React.JSX.Element> | null = null;
@@ -72,7 +70,7 @@ export const renderPayloadToJSX = async function resolveElement(
   }
 
   return await rscPromise;
-};
+}
 
 export function transformStringToReadableStream(input: string) {
   // Using Flight to deserialize the args from the string.
