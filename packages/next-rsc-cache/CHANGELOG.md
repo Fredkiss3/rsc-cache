@@ -1,5 +1,11 @@
 # @rsc-cache/next
 
+## 0.1.4
+
+### Patch Changes
+
+- Fix TS config again
+
 ## 0.1.3
 
 ### Patch Changes
