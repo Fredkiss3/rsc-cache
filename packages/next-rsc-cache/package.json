@@ -39,5 +39,7 @@
   },
   "bugs": {
     "url": "https://github.com/fredkiss3/rsc-cache/issues"
-  }
+  },
+  "homepage": "https://github.com/fredkiss3/rsc-cache#readme",
+  "license": "MIT"
 }
