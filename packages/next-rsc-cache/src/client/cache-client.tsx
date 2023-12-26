@@ -5,7 +5,7 @@ import * as RSDW from "react-server-dom-webpack/client";
 
 import { getSSRManifest } from "../shared/rsc-manifest.js";
 
-export type CacheClientProps = {
+type CacheClientProps = {
   payload: string;
 };
 
@@ -46,7 +46,7 @@ export function CacheClient({ payload }: CacheClientProps) {
   return <CacheClientRenderer promise={renderPromise} />;
 }
 
-export function CacheClientRenderer(props: {
+function CacheClientRenderer(props: {
   promise: Promise<React.JSX.Element>;
 }) {
   return React.use(props.promise);
@@ -72,7 +72,7 @@ async function renderPayloadToJSX(payload: string) {
   return await rscPromise;
 }
 
-export function transformStringToReadableStream(input: string) {
+function transformStringToReadableStream(input: string) {
   // Using Flight to deserialize the args from the string.
   return new ReadableStream({
     start(controller) {

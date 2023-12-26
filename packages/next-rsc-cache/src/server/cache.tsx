@@ -66,7 +66,7 @@ export async function Cache({
   return <CacheClient payload={cachedPayload} />;
 }
 
-export const getBuildId = cache(async () => {
+const getBuildId = cache(async () => {
   return process.env.BUILD_ID ?? "";
 });
 

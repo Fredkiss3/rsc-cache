@@ -1,15 +1,15 @@
 {
   "name": "@rsc-cache/next",
   "version": "0.1.3",
+  "repository": "https://github.com/fredkiss3/rsc-cache.git",
+  "author": "Adrien KISSIE (https://twitter.com/fredkisss)",
   "exports": {
     ".": {
       "react-server": "./dist/index.js",
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist/**/*.{js,d.ts}"
-  ],
+  "files": ["dist/**/*.{js,d.ts}"],
   "type": "module",
   "types": "./dist/index.d.ts",
   "publishConfig": {
