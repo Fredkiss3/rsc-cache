@@ -1,11 +1,12 @@
 import "server-only";
 
 // components
-import { CacheClient } from "../client/cache-client";
+import { CacheClient } from "../client/cache-client.js";
 
 // utils
 import React, { cache } from "react";
-import { renderRSCtoString } from "./render-rsc-to-string";
+import { renderRSCtoString } from "./render-rsc-to-string.js";
+// @ts-expect-error
 import { unstable_cache } from "next/cache";
 
 // types

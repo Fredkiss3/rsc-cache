@@ -1,7 +1,7 @@
 import "server-only";
 import * as RSDW from "react-server-dom-webpack/server.edge";
 import * as React from "react";
-import { getClientManifest } from "../shared/rsc-manifest";
+import { getClientManifest } from "../shared/rsc-manifest.js";
 
 export async function renderRSCtoString(component: React.ReactNode) {
   const rscPayload = RSDW.renderToReadableStream(

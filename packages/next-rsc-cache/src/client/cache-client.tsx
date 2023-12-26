@@ -3,7 +3,7 @@ import * as React from "react";
 import * as RSDWSSr from "react-server-dom-webpack/client.edge";
 import * as RSDW from "react-server-dom-webpack/client";
 
-import { getSSRManifest } from "../shared/rsc-manifest";
+import { getSSRManifest } from "../shared/rsc-manifest.js";
 
 export type CacheClientProps = {
   payload: string;

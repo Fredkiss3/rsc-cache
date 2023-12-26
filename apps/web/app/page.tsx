@@ -1,6 +1,6 @@
 import { CacheErrorBoundary } from "./cache-error-boundary";
 import { CachedServerComponent } from "./cached-rsc";
-import { Cache } from "@rsc-cache/next/cache";
+import { Cache } from "@rsc-cache/next";
 
 export default function Page() {
   return (
@@ -11,9 +11,6 @@ export default function Page() {
           id={"server-component"}
           bypassInDEV={false}
           cacheFn={async (renderRSC, cacheKey) => {
-            // throw an error 50% of the time to trigger error boundary
-            if (Math.random() > 0.5) throw new Error("random cache error");
-
             let payload = cache.get(cacheKey);
             const cacheHit = !!payload;
             if (!payload) {

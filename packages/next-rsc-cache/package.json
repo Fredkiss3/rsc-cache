@@ -3,10 +3,20 @@
   "version": "0.1.0-beta",
   "private": true,
   "exports": {
-    "./cache": "./src/server/cache.tsx"
+    ".": {
+      "react-server": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
+  "files": ["dist/**/*.{js,d.ts}"],
+  "type": "module",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 0",
+    "build": "pnpm build:swc && pnpm types",
+    "build:swc": "swc src -d dist --copy-files",
+    "dev": "pnpm build:swc -w",
+    "types": "tsc --emitDeclarationOnly"
   },
   "devDependencies": {
     "@rsc-cache/eslint-config": "workspace:*",
@@ -27,5 +37,8 @@
   },
   "dependencies": {
     "server-only": "^0.0.1"
+  },
+  "bugs": {
+    "url": "https://github.com/fredkiss3/rsc-cache/issues"
   }
 }

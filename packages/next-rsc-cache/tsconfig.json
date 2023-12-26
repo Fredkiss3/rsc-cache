@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": [ "src", "global.d.ts",  "rsdw.d.ts"],
+  "include": [ "src", "src/global.d.ts", "src/rsdw.d.tsd.ts"],
   "exclude": ["node_modules", "dist"]
 }
