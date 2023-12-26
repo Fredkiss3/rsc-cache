@@ -5,25 +5,21 @@
   "author": "Adrien KISSIE (https://twitter.com/fredkisss)",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "react-server": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "default": "./dist/index.js"
     }
   },
   "sideEffects": false,
-  "files": [
-    "dist/**/*.{js,d.ts}"
-  ],
+  "files": ["dist/**/*.{js,d.ts,cjs}"],
   "type": "module",
-  "types": "./dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
-    "build": "pnpm build:swc && pnpm types",
-    "build:swc": "swc src -d dist --copy-files",
-    "dev": "pnpm build:swc -w",
-    "types": "tsc --emitDeclarationOnly",
+    "build": "bunchee",
     "clean": "rm -rf dist && rm -rf .turbo"
   },
   "devDependencies": {

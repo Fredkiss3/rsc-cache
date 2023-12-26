@@ -3,7 +3,34 @@ import * as React from "react";
 import * as RSDWSSr from "react-server-dom-webpack/client.edge";
 import * as RSDW from "react-server-dom-webpack/client";
 
-import { getSSRManifest } from "../shared/rsc-manifest.js";
+/**
+ * the SSR manifest contains the references to all the client components that will be SSR'ed
+ * And also how to import them.
+ * React will use them to add `<meta preload>` tag on the <head> so that they are eagerly
+ * loaded.
+ * @returns
+ */
+export function getSSRManifest() {
+  let rscManifest: RSCManifest = {};
+
+  // we concatennate all the manifest for all pages
+  if (globalThis.__RSC_MANIFEST) {
+    const allManifests = Object.values(globalThis.__RSC_MANIFEST);
+    for (const manifest of allManifests) {
+      rscManifest = {
+        ...rscManifest,
+        ...manifest
+      };
+    }
+  }
+
+  return {
+    ssrManifest: {
+      moduleLoading: rscManifest?.moduleLoading,
+      moduleMap: rscManifest?.ssrModuleMapping
+    }
+  };
+}
 
 type CacheClientProps = {
   payload: string;
