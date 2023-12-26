@@ -5,9 +5,13 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "biome format --write \"**/*.{ts,tsx,json}\""
+    "format": "biome format --write \"**/*.{ts,tsx,json}\"",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build && pnpm publish -r"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
     "@rsc-cache/eslint-config": "workspace:*",
     "@rsc-cache/typescript-config": "workspace:*",
     "biome": "^0.3.3",
