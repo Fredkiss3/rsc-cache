@@ -7,17 +7,19 @@
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist/**/*.{js,d.ts}"
-  ],
+  "files": ["dist/**/*.{js,d.ts}"],
   "type": "module",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "build": "pnpm build:swc && pnpm types",
     "build:swc": "swc src -d dist --copy-files",
     "dev": "pnpm build:swc -w",
-    "types": "tsc --emitDeclarationOnly"
+    "types": "tsc --emitDeclarationOnly",
+    "clean": "rm -rf dist && rm -rf .turbo"
   },
   "devDependencies": {
     "@rsc-cache/eslint-config": "workspace:*",

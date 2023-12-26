@@ -1,7 +1,21 @@
 {
-  "extends": "@rsc-cache/typescript-config/react-library.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "types": ["@types/react/canary", "@types/react-dom/canary", "node"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "emitDeclarationOnly": true
   },
   "include": [ "src", "src/global.d.ts", "src/rsdw.d.tsd.ts"],
   "exclude": ["node_modules", "dist"]
