@@ -92,7 +92,7 @@ export async function computeCacheKey(
   const buildId = await getBuildId();
   if (!buildId && typeof buildId !== "string") {
     throw new Error(
-      "The BUILD ID must be defined in order for the cache to work, see https://github.com/Fredkiss3/rsc-cache#readme to resolve this error"
+      "The BUILD ID must be defined in order for the cache to work, see https://github.com/Fredkiss3/rsc-cache#troubleshooting to resolve this error"
     );
   }
   fullKey += `-${buildId}`;
