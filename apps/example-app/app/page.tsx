@@ -17,11 +17,11 @@ export default async function Page() {
             Manual revalidated component
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link href="/ssg" className="underline text-blue-600">
             With SSG
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link href="/tweet" className="underline text-blue-600">
             React tweet
