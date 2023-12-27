@@ -20,17 +20,17 @@ export type CacheProps = {
     cacheKey: string,
     ttl?: number
   ) => Promise<string>;
-  getNextBuildID: () => Promise<string> | string;
+  getBuildId: () => Promise<string> | string;
 };
 
-export async function Cache({
+async function Cache({
   id,
   ttl,
   bypassInDEV,
   children,
   debugPayload = false,
   cacheFn,
-  getNextBuildID: getNextBuildId
+  getBuildId
 }: CacheProps) {
   if (
     bypassInDEV ||
@@ -39,7 +39,7 @@ export async function Cache({
     return <>{children}</>;
   }
 
-  const cacheKey = await computeCacheKey(id, getNextBuildId);
+  const cacheKey = await computeCacheKey(id, getBuildId);
 
   const renderRSC = async () => {
     return await renderRSCtoString(children);
@@ -72,6 +72,9 @@ async function computeCacheKey(
   // won't necessarily be the same for another build, especially if the component
   // changed in the meantime
   const buildId = await getBuildId();
+  console.log({
+    buildId
+  })
   if (buildId) {
     fullKey += `-${buildId}`;
   }
@@ -82,22 +85,22 @@ type Prettify<T> = {
   [K in keyof T]: T[K];
 } & {};
 type CreateCacheComponentArgs = Prettify<
-  Pick<CacheProps, "cacheFn" | "getNextBuildID"> & {
+  Pick<CacheProps, "cacheFn" | "getBuildId"> & {
     defaultTTL?: number;
   }
 >;
 
 export function createCacheComponent({
   cacheFn,
-  getNextBuildID,
+  getBuildId,
   defaultTTL
 }: CreateCacheComponentArgs) {
-  return (props: Omit<CacheProps, "cacheFn" | "getNextBuildID">) => (
+  return (props: Omit<CacheProps, "cacheFn" | "getBuildId">) => (
     // @ts-expect-error Idk why this is causing issues while we installed the latest versions of TS & react types packages
     <Cache
       {...props}
       cacheFn={cacheFn}
-      getNextBuildID={getNextBuildID}
+      getBuildId={getBuildId}
       ttl={props.ttl ?? defaultTTL}
     />
   );
