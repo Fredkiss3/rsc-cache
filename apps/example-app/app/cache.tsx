@@ -9,7 +9,11 @@ const getBuildId = cache(async () => {
   if (process.env.NODE_ENV === "development") {
     return Date.now().toString();
   }
-  const buildId = await fs.readFile(".next/BUILD_ID", "utf-8");
+  // on vercel it returns the commit SHA, while on local it reads the `BUILD_ID`
+  // eslint-disable-next-line turbo/no-undeclared-env-vars
+  const commitSha = process.env.VERCEL_GIT_COMMIT_SHA;
+
+  const buildId = commitSha ?? (await fs.readFile(".next/BUILD_ID", "utf-8"));
   console.log({
     buildId
   });
