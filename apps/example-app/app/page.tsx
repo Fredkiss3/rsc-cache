@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 import { CacheErrorBoundary } from "./cache-error-boundary";
 import { CachedServerComponent } from "./cached-rsc";
 import { createCacheComponent } from "@rsc-cache/next";
+import fs from "fs/promises";
 
 const Cache = createCacheComponent({
   async cacheFn(generatePayload, cacheKey, ttl) {
@@ -12,10 +13,7 @@ const Cache = createCacheComponent({
 
     return await fn();
   },
-  getBuildId() {
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
-    return process.env.BUILD_ID!;
-  }
+  getBuildId: async () => await fs.readFile(".next/BUILD_ID", "utf-8")
 });
 
 export default async function Page() {
@@ -31,5 +29,4 @@ export default async function Page() {
   );
 }
 
-// export const dynamic = "force-dynamic";
-export const runtime = "edge";
+export const revalidate = 0;
