@@ -1,5 +1,5 @@
 "use client";
-import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
+import { ErrorBoundary } from "react-error-boundary";
 
 export function CacheErrorBoundary({
   children
