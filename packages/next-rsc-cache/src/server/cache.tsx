@@ -72,12 +72,10 @@ async function computeCacheKey(
   // won't necessarily be the same for another build, especially if the component
   // changed in the meantime
   const buildId = await getBuildId();
-  console.log({
-    buildId
-  })
-  if (buildId) {
-    fullKey += `-${buildId}`;
+  if (!buildId && typeof buildId !== "string") {
+    throw new Error("The BUILD ID must be defined !");
   }
+  fullKey += `-${buildId}`;
   return fullKey;
 }
 

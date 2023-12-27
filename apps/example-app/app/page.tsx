@@ -18,7 +18,7 @@ const Cache = createCacheComponent({
   }
 });
 
-export default function Page() {
+export default async function Page() {
   return (
     <main className="container p-10">
       <h1>Cache test</h1>
