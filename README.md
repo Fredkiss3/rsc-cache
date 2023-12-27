@@ -1,1 +1,1 @@
-./packages/next-rsc-cache/readme.md
+./packages/next-rsc-cache/README.md
