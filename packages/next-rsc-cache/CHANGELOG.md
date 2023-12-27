@@ -1,5 +1,12 @@
 # @rsc-cache/next
 
+## 1.0.1
+
+### Patch Changes
+
+- - Added a default error-boundary with the cache component
+  - Updated the docs
+
 ## 1.0.0
 
 ### Major Changes
