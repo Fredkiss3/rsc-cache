@@ -12,9 +12,7 @@
     }
   },
   "sideEffects": false,
-  "files": [
-    "dist/**/*.{js,d.ts,cjs}"
-  ],
+  "files": ["dist/**/*.{js,d.ts,cjs}"],
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -40,7 +38,6 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "next": "^14.0.4",
     "react": ">= 18.2.0",
     "react-dom": ">= 18.2.0"
   },
