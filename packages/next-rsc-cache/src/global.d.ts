@@ -17,6 +17,13 @@ declare global {
   };
 
   var __RSC_MANIFEST: Record<string, RSCManifest> | null;
+  var RSC_CACHE_CONFIG: {
+    cacheFn?: (
+      renderRSC: () => Promise<string>,
+      cacheKey: string
+    ) => Promise<string>;
+    getNextBuildId?: () => Promise<string> | string;
+  };
 }
 
 export {};

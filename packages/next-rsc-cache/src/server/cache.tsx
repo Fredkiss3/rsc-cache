@@ -4,9 +4,8 @@ import "server-only";
 import { CacheClient } from "../client/cache-client.js";
 
 // utils
-import React, { cache } from "react";
+import * as React from "react";
 import { renderRSCtoString } from "./render-rsc-to-string.js";
-import { unstable_cache } from "next/cache.js";
 
 // types
 export type CacheId = string | number | (string | number)[];
@@ -16,11 +15,12 @@ export type CacheProps = {
   bypassInDEV?: boolean;
   debugPayload?: boolean;
   children: React.ReactNode;
-  cacheFn?: (
+  cacheFn: (
     renderRSC: () => Promise<string>,
-    cacheKey: string
+    cacheKey: string,
+    ttl?: number
   ) => Promise<string>;
-  getNextBuildId: () => Promise<string> | string;
+  getNextBuildID: () => Promise<string> | string;
 };
 
 export async function Cache({
@@ -30,7 +30,7 @@ export async function Cache({
   children,
   debugPayload = false,
   cacheFn,
-  getNextBuildId
+  getNextBuildID: getNextBuildId
 }: CacheProps) {
   if (
     bypassInDEV ||
@@ -44,13 +44,7 @@ export async function Cache({
   const renderRSC = async () => {
     return await renderRSCtoString(children);
   };
-  const defaultCacheFn = unstable_cache(renderRSC, [cacheKey], {
-    tags: [cacheKey],
-    revalidate: ttl
-  });
-
-  const cachedPayload = await (cacheFn?.(renderRSC, cacheKey) ??
-    defaultCacheFn());
+  const cachedPayload = await cacheFn(renderRSC, cacheKey, ttl);
 
   if (debugPayload) {
     return (
@@ -82,4 +76,28 @@ async function computeCacheKey(
     fullKey += `-${buildId}`;
   }
   return fullKey;
+}
+
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
+type CreateCacheComponentArgs = Prettify<
+  Pick<CacheProps, "cacheFn" | "getNextBuildID"> & {
+    defaultTTL?: number;
+  }
+>;
+
+export function createCacheComponent({
+  cacheFn,
+  getNextBuildID,
+  defaultTTL
+}: CreateCacheComponentArgs) {
+  return (props: Omit<CacheProps, "cacheFn" | "getNextBuildID">) => (
+    <Cache
+      {...props}
+      cacheFn={cacheFn}
+      getNextBuildID={getNextBuildID}
+      ttl={props.ttl ?? defaultTTL}
+    />
+  );
 }

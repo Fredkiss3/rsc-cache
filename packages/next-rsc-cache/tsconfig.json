@@ -19,6 +19,6 @@
     "emitDeclarationOnly": true,
     "isolatedModules": true
   },
-  "include": [ "src", "src/global.d.ts", "src/rsdw.d.tsd.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }
