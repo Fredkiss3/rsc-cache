@@ -320,3 +320,13 @@ export const Cache = createCacheComponent({
 Unfortunately this is expected, the package doesn't work yet with edge runtime and I've not been able 
 to find out why, if you have a better idea, feel free to [contribute](../../CONTRIBUTING.md).
 
+## License
+
+MIT License © 2023-Present [Adrien KISSIE](https://github.com/fredkiss3)
+
+## Credits 
+
+- https://github.com/gregberge/twc : for giving us content for the contributions templates (issues, pull requests, contribution guidelines).
+- https://github.com/huozhi/bunchee : It is just a very cool and simple bundler, what's not to love ?
+
+
