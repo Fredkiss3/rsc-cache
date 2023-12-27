@@ -82,9 +82,13 @@ const redis = new Redis({
 export const Cache = createCacheComponent({
   async cacheFn(generatePayload, cacheKey, ttl) {
     let data = await redis.get<string>(cacheKey);
-    if(!data) {
-       data = await generatePayload();
-       await redis.set(cacheKey, data, ttl);
+    if (!data) {
+      data = await generatePayload();
+      if (ttl) {
+        await redis.setex(cacheKey, ttl, data);
+      } else {
+        await redis.set(cacheKey, data);
+      }
     }
     return data;
   },
@@ -219,6 +223,12 @@ The goal of this library is to give you full control of how the components are c
 import { createCacheComponent, computeCacheKey } from "@rsc-cache/next";
 import { cache } from 'react';
 import fs from "fs/promises";
+import { Redis } from "@upstash/redis";
+
+export const redis = new Redis({
+  url: env.UPSTASH_REDIS_REST_URL,
+  token: env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 const getBuildId = cache(async () => {
   // by default `.next/BUILD_ID` doesn't exists on DEV
@@ -230,11 +240,17 @@ const getBuildId = cache(async () => {
 });
 
 export const Cache = createCacheComponent({
-    cacheFn(generatePayload, cacheKey, ttl) {
-        return unstable_cache(generatePayload, [cacheKey], {
-            tags: [cacheKey],
-            revalidate: ttl
-        })();
+    async cacheFn(generatePayload, cacheKey, ttl) {
+      let data = await redis.get<string>(cacheKey);
+      if (!data) {
+        data = await generatePayload();
+        if (ttl) {
+          await redis.setex(cacheKey, ttl, data);
+        } else {
+          await redis.set(cacheKey, data);
+        }
+      }
+      return data;
     },
     getBuildId,
 });
@@ -244,7 +260,7 @@ export const getCacheKey = async (id: string) => computeCacheKey(id, getBuildId)
 1. You can revalidate on user input :
 
 ```tsx
-import { Cache, getCacheKey } from "~/components/cache";
+import { Cache, getCacheKey, redis } from "~/components/cache";
 
 export default async function Page() {
   return (
@@ -256,7 +272,7 @@ export default async function Page() {
        <form action={async () => {
          "use server";
           const id = await getCacheKey("markdown");
-          revalidateTag(id);
+          await redis.del(id);
        }}>
          <button>Revalidate</button>
        </form>
