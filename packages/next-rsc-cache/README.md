@@ -64,7 +64,11 @@ export default async function Page() {
 
 ## Examples
 
-1. With REDIS :
+### 0. demos :
+
+- You can find a live demo here : https://rsc-cache-example-app.vercel.app, the code source of this component is located [here](../../apps/example-app)
+
+### 1. With REDIS :
 
 ```tsx
 import { Redis } from "@upstash/redis";
@@ -88,7 +92,7 @@ export const Cache = createCacheComponent({
 });
 ```
 
-2. With Cloudflare KV : 
+### 2. With Cloudflare KV : 
 
 ```tsx
 import { createCacheComponent } from "@rsc-cache/next";
