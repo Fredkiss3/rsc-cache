@@ -328,5 +328,6 @@ MIT License © 2023-Present [Adrien KISSIE](https://github.com/fredkiss3)
 
 - https://github.com/gregberge/twc : for giving us content for the contributions templates (issues, pull requests, contribution guidelines).
 - https://github.com/huozhi/bunchee : It is just a very cool and simple bundler, what's not to love ?
+- https://github.com/vercel/react-tweet : For inspiration 
 
 
