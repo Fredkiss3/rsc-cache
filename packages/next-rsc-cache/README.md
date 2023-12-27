@@ -92,7 +92,7 @@ export const Cache = createCacheComponent({
 });
 ```
 
-### 2. With the FileSystem : 
+### 2. With the file system : 
 
 
 ```tsx
@@ -115,7 +115,7 @@ export const Cache = createCacheComponent({
         data = cacheEntry.value;  
       }
     } catch (e) {
-      // do nothing...
+      // consider the data as not in cache
     }
 
     if(!data) {
