@@ -114,6 +114,9 @@ importers:
 
   packages/next-rsc-cache:
     dependencies:
+      react-error-boundary:
+        specifier: ^4.0.12
+        version: 4.0.12(react@18.2.0)
       server-only:
         specifier: ^0.0.1
         version: 0.0.1

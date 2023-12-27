@@ -2,35 +2,7 @@
 import * as React from "react";
 import * as RSDWSSr from "react-server-dom-webpack/client.edge";
 import * as RSDW from "react-server-dom-webpack/client";
-
-/**
- * the SSR manifest contains the references to all the client components that will be SSR'ed
- * And also how to import them.
- * React will use them to add `<meta preload>` tag on the <head> so that they are eagerly
- * loaded.
- * @returns
- */
-export function getSSRManifest() {
-  let rscManifest: RSCManifest = {};
-
-  // we concatennate all the manifest for all pages
-  if (globalThis.__RSC_MANIFEST) {
-    const allManifests = Object.values(globalThis.__RSC_MANIFEST);
-    for (const manifest of allManifests) {
-      rscManifest = {
-        ...rscManifest,
-        ...manifest
-      };
-    }
-  }
-
-  return {
-    ssrManifest: {
-      moduleLoading: rscManifest?.moduleLoading,
-      moduleMap: rscManifest?.ssrModuleMapping
-    }
-  };
-}
+import { ErrorBoundary } from "react-error-boundary";
 
 type CacheClientProps = {
   payload: string;
@@ -70,13 +42,48 @@ export function CacheClient({ payload }: CacheClientProps) {
     pendingPromise.status = "pending";
     return pendingPromise;
   }, [payload]);
-  return <CacheClientRenderer promise={renderPromise} />;
+  return (
+    <CacheErrorBoundary>
+      <CacheClientRenderer promise={renderPromise} />
+    </CacheErrorBoundary>
+  );
 }
 
 function CacheClientRenderer(props: {
   promise: Promise<React.JSX.Element>;
 }) {
   return React.use(props.promise);
+}
+
+export function CacheErrorBoundary({
+  children
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ErrorBoundary
+      FallbackComponent={(props) => {
+        if (typeof window === "undefined") {
+          console.error(`Error SSR'ing the cached component :`, props.error);
+        } else {
+          console.error(
+            `Error client rendering the cached component :`,
+            props.error
+          );
+        }
+        return (
+          <div>
+            <p>
+              Error rendering the cached component : {props.error.toString()}
+            </p>
+            <button onClick={props.resetErrorBoundary}>reset</button>
+          </div>
+        );
+      }}
+    >
+      {children}
+    </ErrorBoundary>
+  );
 }
 
 async function renderPayloadToJSX(payload: string) {
@@ -107,4 +114,33 @@ function transformStringToReadableStream(input: string) {
       controller.close();
     }
   });
+}
+
+/**
+ * the SSR manifest contains the references to all the client components that will be SSR'ed
+ * And also how to import them.
+ * React will use them to add `<meta preload>` tag on the <head> so that they are eagerly
+ * loaded.
+ * @returns
+ */
+export function getSSRManifest() {
+  let rscManifest: RSCManifest = {};
+
+  // we concatennate all the manifest for all pages
+  if (globalThis.__RSC_MANIFEST) {
+    const allManifests = Object.values(globalThis.__RSC_MANIFEST);
+    for (const manifest of allManifests) {
+      rscManifest = {
+        ...rscManifest,
+        ...manifest
+      };
+    }
+  }
+
+  return {
+    ssrManifest: {
+      moduleLoading: rscManifest?.moduleLoading,
+      moduleMap: rscManifest?.ssrModuleMapping
+    }
+  };
 }

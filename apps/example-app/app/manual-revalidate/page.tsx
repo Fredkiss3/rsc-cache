@@ -10,7 +10,7 @@ export default function Page() {
     <main className="container p-10 flex flex-col gap-10 max-w-2xl mx-auto">
       <h1 className="text-3xl font-semibold">Manually revalidated component</h1>
       <CacheErrorBoundary>
-        <Cache id="manual-revalidate">
+        <Cache id="manual-revalidate" cacheInDEV>
           <CachedServerComponent id="manual-revalidate" />
         </Cache>
       </CacheErrorBoundary>

@@ -44,6 +44,7 @@
     "react-dom": ">= 18.2.0"
   },
   "dependencies": {
+    "react-error-boundary": "^4.0.12",
     "server-only": "^0.0.1"
   },
   "bugs": {
