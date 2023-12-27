@@ -93,6 +93,7 @@ export function createCacheComponent({
   defaultTTL
 }: CreateCacheComponentArgs) {
   return (props: Omit<CacheProps, "cacheFn" | "getNextBuildID">) => (
+    // @ts-expect-error Idk why this is causing issues while we installed the latest versions of TS & react types packages
     <Cache
       {...props}
       cacheFn={cacheFn}
