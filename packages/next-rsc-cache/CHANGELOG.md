@@ -1,5 +1,14 @@
 # @rsc-cache/next
 
+## 1.0.0
+
+### Major Changes
+
+- First Major Bump
+
+  - Added 2 exports for the cache component : `createCacheComponent` and `computeCacheKey`
+  - Added actual docs
+
 ## 0.1.5
 
 ### Patch Changes
