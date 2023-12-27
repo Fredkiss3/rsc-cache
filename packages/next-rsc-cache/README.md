@@ -81,10 +81,50 @@ const redis = new Redis({
 
 export const Cache = createCacheComponent({
   async cacheFn(generatePayload, cacheKey, ttl) {
-    const data = await redis.get<string>(cacheKey);
+    let data = await redis.get<string>(cacheKey);
     if(!data) {
        data = await generatePayload();
        await redis.set(cacheKey, data, ttl);
+    }
+    return data;
+  },
+  // ... rest of arguments
+});
+```
+
+### 2. With the FileSystem : 
+
+
+```tsx
+import { createCacheComponent } from "@rsc-cache/next";
+import fs from "fs/promises";
+import path from "path";
+
+const CACHE_DIR = `.next/cache/fs-cache`
+type CacheEntry = { value: string; expiry: number | null };
+
+export const Cache = createCacheComponent({
+  async cacheFn(generatePayload, cacheKey, ttl) {
+    await fs.mkdir(CACHE_DIR, { recursive: true }).catch(() => {}) // do nothing if the folder already exists
+    const filePath = path.join(CACHE_DIR, `${key}.json`);
+
+    let data: string |null = null;
+    try {
+      const cacheEntry: CacheEntry = JSON.parse(await fs.readFile(filePath, "utf-8"));
+      if (cacheEntry.expiry === null || Date.now() < cacheEntry.expiry) {
+        data = cacheEntry.value;  
+      }
+    } catch (e) {
+      // do nothing...
+    }
+
+    if(!data) {
+       data = await generatePayload();
+       const cacheEntry = {
+          value: data,
+          expiry: ttl ? Date.now() + ttl * 1000 : null,
+       } satisfies CacheEntry;
+       await fs.writeFile(filePath, JSON.stringify(cacheEntry), "utf-8");
     }
     return data;
   },
@@ -106,7 +146,7 @@ const kv = process.env.KV as KVNamespace;
 
 export const Cache = createCacheComponent({
   async cacheFn(generatePayload, cacheKey, expirationTtl) {
-    const data = await kv.get(cacheKey);
+    let data = await kv.get(cacheKey);
     if(!data) {
        data = await generatePayload();
        await kv.put(
