@@ -4,8 +4,8 @@ import { CachedServerComponent } from "./cached-rsc";
 import { createCacheComponent } from "@rsc-cache/next";
 
 const Cache = createCacheComponent({
-  async cacheFn(renderRSC, cacheKey, ttl) {
-    const fn = unstable_cache(renderRSC, [cacheKey], {
+  async cacheFn(generatePayload, cacheKey, ttl) {
+    const fn = unstable_cache(generatePayload, [cacheKey], {
       tags: [cacheKey],
       revalidate: ttl
     });
@@ -23,7 +23,7 @@ export default async function Page() {
     <main className="container p-10">
       <h1>Cache test</h1>
       <CacheErrorBoundary>
-        <Cache id={"server-component"} bypassInDEV={false}>
+        <Cache id={"server-component-rsc"} cacheInDEV>
           <CachedServerComponent />
         </Cache>
       </CacheErrorBoundary>
@@ -31,4 +31,5 @@ export default async function Page() {
   );
 }
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
+export const runtime = "edge";
