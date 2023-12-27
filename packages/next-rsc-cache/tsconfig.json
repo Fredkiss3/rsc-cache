@@ -4,7 +4,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "jsx": "preserve",
-    "types": ["react/canary", "node"],
+    "types": ["react/canary", "react-dom/canary", "node"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
