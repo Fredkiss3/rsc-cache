@@ -66,7 +66,7 @@ export default async function Page() {
 
 ### 0. demos :
 
-- You can find a live demo here : https://rsc-cache-example-app.vercel.app, the code source of this component is located [here](../../apps/example-app)
+- You can find a live demo here : https://rsc-cache-example-app.vercel.app, the code source of this component is located [here](https://github.com/Fredkiss3/rsc-cache/tree/main/apps/example-app)
 
 ### 1. With REDIS :
 
