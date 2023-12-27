@@ -1,8 +1,9 @@
 import { CachedServerComponent } from "../cached-rsc";
 import { Cache, getCacheKey } from "../cache";
-import { revalidateTag } from "next/cache";
 import { CacheErrorBoundary } from "../cache-error-boundary";
 import { SubmitButton } from "../submit-button";
+import { revalidatePath } from "next/cache";
+import { kv } from "@vercel/kv";
 
 export default function Page() {
   return (
@@ -18,7 +19,8 @@ export default function Page() {
         action={async () => {
           "use server";
           const id = await getCacheKey("manual-revalidate");
-          revalidateTag(id);
+          await kv.del(id);
+          revalidatePath("/manual-revalidate");
         }}
       >
         <SubmitButton>Revalidate "manual-revalidate"</SubmitButton>
