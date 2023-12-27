@@ -9,7 +9,11 @@ const getBuildId = cache(async () => {
   if (process.env.NODE_ENV === "development") {
     return Date.now().toString();
   }
-  return await fs.readFile(".next/BUILD_ID", "utf-8");
+  const buildId = await fs.readFile(".next/BUILD_ID", "utf-8");
+  console.log({
+    buildId
+  });
+  return buildId;
 });
 
 export const Cache = createCacheComponent({
