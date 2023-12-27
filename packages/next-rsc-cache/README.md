@@ -23,20 +23,21 @@ npm install @rsc-cache/next
 
 ## Usage
 
-1. Configure and export the cache component, only 2 functions are required to configure the component :
+1. Configure and export the cache component :
 
 ```tsx
 // src/components/cache.tsx
 import { createCacheComponent } from "@rsc-cache/next";
+import fs from "fs/promises";
 
 export const Cache = createCacheComponent({
-  cacheFn(renderRSC, cacheKey, ttl) {
-    return unstable_cache(renderRSC, [cacheKey], {
+  cacheFn(generatePayload, cacheKey, ttl) {
+    return unstable_cache(generatePayload, [cacheKey], {
       tags: [cacheKey],
       revalidate: ttl
     })();
   },
-  getBuildId: () => process.env.BUILD_ID!,
+  getBuildId: async () => await fs.readFile(".next/BUILD_ID", "utf-8"),
   defaultTTL: 604_800, // 7 days in seconds
 });
 ```
@@ -47,10 +48,14 @@ export const Cache = createCacheComponent({
 import { Cache } from "~/components/cache";
 
 export default async function Page() {
+  const TEN_MINUTES_IN_SECONDS = 600;
   return (
     <main className="container p-10">
        <Cache id="markdown">
           <Markdown content="..." />
+       </Cache>
+       <Cache id="expensive-rsc" ttl={TEN_MINUTES_IN_SECONDS}>
+          <ExpensiveRSC />
        </Cache>
     </main>
   );
@@ -71,16 +76,15 @@ const redis = new Redis({
 });
 
 export const Cache = createCacheComponent({
-  async cacheFn(renderRSC, cacheKey, ttl) {
+  async cacheFn(generatePayload, cacheKey, ttl) {
     const data = await redis.get<string>(cacheKey);
     if(!data) {
-       data = await renderRSC();
+       data = await generatePayload();
        await redis.set(cacheKey, data, ttl);
     }
     return data;
   },
-  getBuildId: () => process.env.BUILD_ID!,
-  defaultTTL: 604_800, // 7 days in seconds
+  // ... rest of arguments
 });
 ```
 
@@ -97,10 +101,10 @@ export interface KVNamespace {
 const kv = process.env.KV as KVNamespace;
 
 export const Cache = createCacheComponent({
-  async cacheFn(renderRSC, cacheKey, expirationTtl) {
+  async cacheFn(generatePayload, cacheKey, expirationTtl) {
     const data = await kv.get(cacheKey);
     if(!data) {
-       data = await renderRSC();
+       data = await generatePayload();
        await kv.put(
          cacheKey,
          data, 
@@ -111,8 +115,7 @@ export const Cache = createCacheComponent({
     }
     return data;
   },
-  getBuildId: () => process.env.BUILD_ID!,
-  defaultTTL: 604_800, // 7 days in seconds
+  // ... rest of arguments
 });
 ```
 
@@ -142,7 +145,6 @@ export function CacheErrorBoundary({
 }
 ```
 
-
 ```tsx
 import * as React from 'react';
 import { Cache } from "~/components/cache";
@@ -162,11 +164,114 @@ export default async function Page() {
 }
 ```
 
+## Manually revalidating the cache
+
+The goal of this library is to give you full control of how the components are cached with no implicit caching. If you want to manually revalidate a cached component, you can use the function `computeCacheKey` with the same ID for the component you want to revalidate : 
+
+1. export a Higher order function to not repeat the BUILD ID logic :
+
+```tsx
+// src/components/cache.tsx
+import { createCacheComponent, computeCacheKey } from "@rsc-cache/next";
+import { cache } from 'react';
+import fs from "fs/promises";
+
+const getBuildId = cache(async () => {
+  // by default `.next/BUILD_ID` doesn't exists on DEV
+  // so we return an ever changing build ID instead
+  if (process.env.NODE_ENV === "development") {
+    return Date.now().toString();
+  }
+  return await fs.readFile(".next/BUILD_ID", "utf-8");
+});
+
+export const Cache = createCacheComponent({
+    cacheFn(generatePayload, cacheKey, ttl) {
+        return unstable_cache(generatePayload, [cacheKey], {
+            tags: [cacheKey],
+            revalidate: ttl
+        })();
+    },
+    getBuildId,
+});
+export const getCacheKey = async (id: string) => computeCacheKey(id, getBuildId);
+```
+
+1. You can revalidate on user input :
+
+```tsx
+import { Cache, getCacheKey } from "~/components/cache";
+
+export default async function Page() {
+  return (
+    <main className="container p-10">
+       <Cache id="markdown">
+          <Markdown content="..." />
+       </Cache>
+
+       <form action={async () => {
+         "use server";
+          const id = await getCacheKey("markdown");
+          revalidateTag(id);
+       }}>
+         <button>Revalidate</button>
+       </form>
+    </main>
+  );
+}
+```
+
+
 ## API
 
-This package only exports a single function : `createCacheComponent` which creates a `Cache` component.
+This package exports 3 elements : a `createCacheComponent` which is factory that setup the `Cache` component and a `computeCacheKey` function for manually revalidating the component.
 
-> TODO
+### `createCacheComponent({ cacheFn, getBuildId, defaultTTL })`
+
+Higher order function that setup the cache component.
+
+###### Parameters
+
+*   `cacheFn` The function to handle caching logic.
+
+*   `getBuildId` Function to get the `BUILD_ID` generated by nextjs
+  
+*   `defaultTTL` The default TTL that will be used by all the `Cache` components
+
+###### Returns
+
+the `Cache` component
+
+### `<Cache>`
+
+Component used for caching.
+
+###### Props
+
+*    `id`: the cache id corresponding to the component;
+
+*    `ttl`?: number | undefined;
+
+*    `debugPayload`?: show the cached payload inside a `<pre>` tag
+
+*    `cacheInDEV`?: whether to cache in DEV or not, defaults to false, not recommended, but can be useful this for debugging
+
+*    `children`: the component to cache
+
+### `computeCacheKey`
+
+Function used to compute the cacheKey, you can use it to revalidate the cache.
+
+###### Parameters
+
+*   `id` : the cache ID, you can use it to revalidate the cache
+
+*   `getBuildId` : Function to get the `BUILD_ID` generated by nextjs
+
+###### Returns
+
+a `string` corresponding to the cache ID.
+
 
 ## Troubleshooting
 
@@ -180,24 +285,38 @@ import { createCacheComponent } from "@rsc-cache/next";
 import fs from 'fs/promises';
 
 export const Cache = createCacheComponent({
-  cacheFn(renderRSC, cacheKey, ttl) {
-    // ...
-  },
-  getBuildId: async () => {
-    return await fs.readFile(".next/BUILD_ID", "utf-8");
-  },
+  // ... rest of arguments
+  getBuildId: async () => await fs.readFile(".next/BUILD_ID", "utf-8"),
 });
 ```
 
-It might not work if you use vercel to deploy 
+If you define your build ID differently, you can use a package like [`next-build-id`](https://github.com/nexdrew/next-build-id) to generate your build ID, and pass the build ID as an environment variable : 
 
+```js
+// next.config.js
+const nextBuildId = require("next-build-id");
+
+/** @type {import('next').NextConfig} */
+module.exports = {
+  generateBuildId: () => nextBuildId({ dir: __dirname }),
+  env: {
+    BUILD_ID: nextBuildId.sync({ dir: __dirname })
+  }
+};
+```
+
+```tsx
+// src/components/cache.tsx
+import { createCacheComponent } from "@rsc-cache/next";
+
+export const Cache = createCacheComponent({
+  // ... rest of arguments
+  getBuildId: () => process.env.BUILD_ID!,
+});
+```
 
 ### It doesn't work with edge runtime
 
-Unfortunately this is expected, the package doesn't work yet with edge runtime and I've not yet been able 
-to find out why, but if you have a better idea, feel free to [contribute](../../CONTRIBUTING.md).
-
-## How it works
-
-> TODO
+Unfortunately this is expected, the package doesn't work yet with edge runtime and I've not been able 
+to find out why, if you have a better idea, feel free to [contribute](../../CONTRIBUTING.md).
 

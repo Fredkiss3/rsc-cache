@@ -1,28 +1,33 @@
-import { unstable_cache } from "next/cache";
+import { revalidateTag } from "next/cache";
+import { Cache, getCacheKey } from "./cache";
 import { CacheErrorBoundary } from "./cache-error-boundary";
 import { CachedServerComponent } from "./cached-rsc";
-import { createCacheComponent } from "@rsc-cache/next";
-import fs from "fs/promises";
-
-const Cache = createCacheComponent({
-  async cacheFn(generatePayload, cacheKey, ttl) {
-    const fn = unstable_cache(generatePayload, [cacheKey], {
-      tags: [cacheKey],
-      revalidate: ttl
-    });
-
-    return await fn();
-  },
-  getBuildId: async () => await fs.readFile(".next/BUILD_ID", "utf-8")
-});
+import { SubmitButton } from "./submit-button";
 
 export default async function Page() {
   return (
-    <main className="container p-10">
-      <h1>Cache test</h1>
+    <main className="container p-10 flex flex-col gap-10 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-bold">Cache test</h1>
+      <p>This is a demo of the cache component </p>
       <CacheErrorBoundary>
-        <Cache id={"server-component-rsc"} cacheInDEV>
-          <CachedServerComponent />
+        <Cache id="manual-revalidate">
+          <CachedServerComponent id="manual-revalidate" />
+        </Cache>
+      </CacheErrorBoundary>
+
+      <form
+        action={async () => {
+          "use server";
+          const id = await getCacheKey("manual-revalidate");
+          revalidateTag(id);
+        }}
+      >
+        <SubmitButton>Revalidate "manual-revalidate"</SubmitButton>
+      </form>
+
+      <CacheErrorBoundary>
+        <Cache id="auto-revalidate" ttl={5}>
+          <CachedServerComponent id="auto-revalidate" />
         </Cache>
       </CacheErrorBoundary>
     </main>

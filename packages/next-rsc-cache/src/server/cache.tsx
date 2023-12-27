@@ -11,6 +11,9 @@ import { renderRSCtoString } from "./render-rsc-to-string.js";
 export type CacheId = string | number | (string | number)[];
 export type CacheProps = {
   id: CacheId;
+  /**
+   * time to live in seconds, specific to this component
+   */
   ttl?: number;
   /**
    * Default to `false`, If `true` this will apply cache in development.
@@ -113,7 +116,7 @@ export function createCacheComponent({
   getBuildId,
   defaultTTL
 }: CreateCacheComponentArgs) {
-  return (props: Omit<CacheProps, "cacheFn" | "getBuildId">) => (
+  return (props: Prettify<Omit<CacheProps, "cacheFn" | "getBuildId">>) => (
     // @ts-expect-error Idk why this is causing issues while we installed the latest versions of TS & react types packages
     <Cache
       {...props}
