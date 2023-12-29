@@ -11,10 +11,9 @@
       "default": "./dist/index.js"
     }
   },
+  "types": "./dist/index.d.ts",
   "sideEffects": false,
-  "files": [
-    "dist/**/*.{js,d.ts,cjs}"
-  ],
+  "files": ["dist/**/*.{js,d.ts,cjs}"],
   "type": "module",
   "publishConfig": {
     "access": "public"
