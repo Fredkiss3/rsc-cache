@@ -1,6 +1,6 @@
 {
   "name": "@rsc-cache/next",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": "https://github.com/fredkiss3/rsc-cache.git",
   "author": "Adrien KISSIE (https://twitter.com/fredkisss)",
   "exports": {
@@ -13,7 +13,9 @@
   },
   "types": "./dist/index.d.ts",
   "sideEffects": false,
-  "files": ["dist/**/*.{js,d.ts,cjs}"],
+  "files": [
+    "dist/**/*.{js,d.ts,cjs}"
+  ],
   "type": "module",
   "publishConfig": {
     "access": "public"

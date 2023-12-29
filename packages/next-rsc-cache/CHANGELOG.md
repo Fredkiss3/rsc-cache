@@ -1,5 +1,11 @@
 # @rsc-cache/next
 
+## 1.0.2
+
+### Patch Changes
+
+- Fix types export in package.json
+
 ## 1.0.1
 
 ### Patch Changes
