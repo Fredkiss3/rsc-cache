@@ -1,5 +1,11 @@
 # @rsc-cache/next
 
+## 1.0.4
+
+### Patch Changes
+
+- revert package.json changes
+
 ## 1.0.3
 
 ### Patch Changes
