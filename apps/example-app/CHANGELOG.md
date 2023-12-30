@@ -1,5 +1,12 @@
 # @rsc-cache/web
 
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies
+  - @rsc-cache/next@1.0.3
+
 ## 1.0.9
 
 ### Patch Changes
