@@ -61,7 +61,7 @@ export function CacheClient({ payload, debug }: CacheClientProps) {
   }, [payload]);
   return (
     <CacheErrorBoundary>
-      <CacheClientRenderer promise={renderPromise} />
+      <CacheClientRenderer debug={debug} promise={renderPromise} />
     </CacheErrorBoundary>
   );
 }
