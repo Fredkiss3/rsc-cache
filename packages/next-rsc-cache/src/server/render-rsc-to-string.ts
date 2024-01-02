@@ -9,7 +9,10 @@ import * as React from "react";
  * the chunk (js files) corresponding to those client components
  * @returns
  */
-export function getClientManifest() {
+export function getClientManifest(debug?: boolean) {
+  if (debug) {
+    console.log(`🔄 getting the client manifest`);
+  }
   let clientManifest: ClientManifest = {};
 
   // we concatennate all the manifest for all pages
@@ -22,15 +25,36 @@ export function getClientManifest() {
       };
     }
   }
+
+  if (debug) {
+    console.log(`✅ finished getting the client manifest`);
+    console.log(`🔍 Here is its value : `, { clientManifest });
+  }
   return clientManifest;
 }
 
-export async function renderRSCtoString(component: React.ReactNode) {
-  const rscPayload = RSDW.renderToReadableStream(
-    component,
-    getClientManifest()
-  );
-  return await transformStreamToString(rscPayload);
+export async function renderRSCtoString(
+  component: React.ReactNode,
+  debug?: boolean
+) {
+  if (debug) {
+    console.log(`🔄 calling \`RSDW.renderToReadableStream()\``);
+  }
+  const rscStream = RSDW.renderToReadableStream(component, getClientManifest());
+
+  if (debug) {
+    console.log(`✅ finished calling \`RSDW.renderToReadableStream()\``);
+    console.log(
+      `🔄 calling \`transformStreamToString()\` to generate the payload string`
+    );
+  }
+
+  const rscPayloadStr = await transformStreamToString(rscStream);
+  if (debug) {
+    console.log(`✅ finished calling \`transformStreamToString()\``);
+  }
+
+  return rscPayloadStr;
 }
 
 async function transformStreamToString(stream: ReadableStream) {

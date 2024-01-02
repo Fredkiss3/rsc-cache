@@ -6,9 +6,10 @@ import { ErrorBoundary } from "react-error-boundary";
 
 type CacheClientProps = {
   payload: string;
+  debug?: boolean;
 };
 
-export function CacheClient({ payload }: CacheClientProps) {
+export function CacheClient({ payload, debug }: CacheClientProps) {
   const renderPromise = React.useMemo(() => {
     /**
      * This is to fix a bug that happens sometimes in the SSR phase,
@@ -19,13 +20,23 @@ export function CacheClient({ payload }: CacheClientProps) {
      * these fields are used internally by `use` and are what's
      * prevent `use` from suspending indefinitely.
      */
-    const pendingPromise = renderPayloadToJSX(payload)
+    if (debug) {
+      console.log(
+        `🔄 Resolving the react element corresponding to the JSX string payload`
+      );
+    }
+    const pendingPromise = renderPayloadToJSX(payload, debug)
       .then((value) => {
         // @ts-expect-error
         if (pendingPromise.status === "pending") {
           const fulfilledThenable = pendingPromise as any;
           fulfilledThenable.status = "fulfilled";
           fulfilledThenable.value = value;
+          if (debug) {
+            console.log(
+              `✅ Finished Resolving the react element corresponding to the JSX string payload`
+            );
+          }
         }
         return value;
       })
@@ -35,6 +46,12 @@ export function CacheClient({ payload }: CacheClientProps) {
           const rejectedThenable = pendingPromise as any;
           rejectedThenable.status = "rejected";
           rejectedThenable.reason = error;
+
+          if (debug) {
+            console.log(
+              `❌ Error encountered when resolving the react element corresponding to the JSX string payload`
+            );
+          }
         }
         throw error;
       });
@@ -51,8 +68,19 @@ export function CacheClient({ payload }: CacheClientProps) {
 
 function CacheClientRenderer(props: {
   promise: Promise<React.JSX.Element>;
+  debug?: boolean;
 }) {
-  return React.use(props.promise);
+  if (props.debug) {
+    console.log(`🔄 resolving the cache client promise with \`React.use()\``);
+  }
+  const element = React.use(props.promise);
+  if (props.debug) {
+    console.log(
+      `✅ finished resolving the cache client promise with \`React.use()\``
+    );
+  }
+
+  return element;
 }
 
 export function CacheErrorBoundary({
@@ -64,10 +92,10 @@ export function CacheErrorBoundary({
     <ErrorBoundary
       FallbackComponent={(props) => {
         if (typeof window === "undefined") {
-          console.error(`Error SSR'ing the cached component :`, props.error);
+          console.error(`❌ Error SSR'ing the cached component :`, props.error);
         } else {
           console.error(
-            `Error client rendering the cached component :`,
+            `❌ Error client rendering the cached component :`,
             props.error
           );
         }
@@ -86,24 +114,42 @@ export function CacheErrorBoundary({
   );
 }
 
-async function renderPayloadToJSX(payload: string) {
-  console.log("Render payload to JSX");
+async function renderPayloadToJSX(payload: string, debug?: boolean) {
   const rscStream = transformStringToReadableStream(payload);
-  let rscPromise: Promise<React.JSX.Element> | null = null;
+  let rscPromise: React.JSX.Element | null = null;
 
   // Render to HTML
   if (typeof window === "undefined") {
     // the SSR manifest contains all the client components that will be SSR'ed
     // And also how to import them
-    rscPromise = RSDWSSr.createFromReadableStream(rscStream, getSSRManifest());
+    if (debug) {
+      console.log(`🔄 calling \`RSDW.createFromReadableStream()\` for SSR`);
+    }
+    rscPromise = await RSDWSSr.createFromReadableStream(
+      rscStream,
+      getSSRManifest(debug)
+    );
+    if (debug) {
+      console.log(
+        `✅ finished calling \`RSDW.createFromReadableStream()\` for SSR`
+      );
+    }
   }
 
   // Hydrate or CSR
   if (rscPromise === null) {
-    rscPromise = RSDW.createFromReadableStream(rscStream, {});
+    if (debug) {
+      console.log(`🔄 calling \`RSDW.createFromReadableStream()\` for CSR`);
+    }
+    rscPromise = await RSDW.createFromReadableStream(rscStream, {});
+    if (debug) {
+      console.log(
+        `✅ finished calling \`RSDW.createFromReadableStream()\` for CSR`
+      );
+    }
   }
 
-  return await rscPromise;
+  return rscPromise;
 }
 
 function transformStringToReadableStream(input: string) {
@@ -123,7 +169,10 @@ function transformStringToReadableStream(input: string) {
  * loaded.
  * @returns
  */
-export function getSSRManifest() {
+export function getSSRManifest(debug?: boolean) {
+  if (debug) {
+    console.log(`🔄 getting the SSR manifest`);
+  }
   let rscManifest: RSCManifest = {};
 
   // we concatennate all the manifest for all pages
@@ -135,6 +184,16 @@ export function getSSRManifest() {
         ...manifest
       };
     }
+  }
+
+  if (debug) {
+    console.log(`✅ finished getting the SSR manifest`);
+    console.log(`🔍 Here is its value : `, {
+      ssrManifest: {
+        moduleLoading: rscManifest?.moduleLoading,
+        moduleMap: rscManifest?.ssrModuleMapping
+      }
+    });
   }
 
   return {

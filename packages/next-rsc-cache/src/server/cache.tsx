@@ -24,6 +24,10 @@ export type CacheProps = {
    * If true, outputs the cached payload for debugging.
    */
   debugPayload?: boolean;
+  /**
+   * If true, logs every action that this component does
+   */
+  debugLogs?: boolean;
   children: React.ReactNode;
   /**
    * The function to handle caching logic.
@@ -53,6 +57,7 @@ async function Cache({
   cacheInDEV = false,
   children,
   debugPayload = false,
+  debugLogs,
   cacheFn,
   getBuildId
 }: CacheProps) {
@@ -60,12 +65,24 @@ async function Cache({
     return <>{children}</>;
   }
 
+  if (debugLogs) {
+    console.log(`🔄 Computing the cache key`);
+  }
   const cacheKey = await computeCacheKey(id, getBuildId);
+  if (debugLogs) {
+    console.log(`✅ Finished Computing the cache key`);
+    console.log(`🔍 Its value is : "${cacheKey}"`);
+  }
 
-  const renderRSC = async () => {
-    return await renderRSCtoString(children);
-  };
+  const renderRSC = async () => await renderRSCtoString(children, debugLogs);
+
+  if (debugLogs) {
+    console.log(`🔄 Rendering the RSC Payload`);
+  }
   const cachedPayload = await cacheFn(renderRSC, cacheKey, ttl);
+  if (debugLogs) {
+    console.log(`✅ Finished rendering the RSC Payload`);
+  }
 
   if (debugPayload) {
     return (
@@ -80,7 +97,7 @@ async function Cache({
     );
   }
 
-  return <CacheClient payload={cachedPayload} />;
+  return <CacheClient debug={debugLogs} payload={cachedPayload} />;
 }
 
 export async function computeCacheKey(
