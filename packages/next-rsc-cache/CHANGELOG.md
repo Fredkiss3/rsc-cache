@@ -1,5 +1,11 @@
 # @rsc-cache/next
 
+## 1.1.0
+
+### Minor Changes
+
+- Add option to log what is going on in the cache component
+
 ## 1.0.4
 
 ### Patch Changes
