@@ -1,6 +1,6 @@
 {
   "name": "@rsc-cache/next",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "repository": "https://github.com/fredkiss3/rsc-cache.git",
   "author": "Adrien KISSIE (https://twitter.com/fredkisss)",
   "exports": {

@@ -1,5 +1,11 @@
 # @rsc-cache/next
 
+## 1.1.1
+
+### Patch Changes
+
+- Add missing log to `React.use()`
+
 ## 1.1.0
 
 ### Minor Changes
